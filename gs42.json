@@ -1,0 +1,14 @@
+{
+  "title": "Game Studio Kids",
+  "tagline": {
+    "en": "Draw it. Build it. Play it.",
+    "pt": "Desenhe. Monte. Jogue.",
+    "es": "Dibújalo. Móntalo. Juégalo.",
+    "fr": "Dessine-le. Construis-le. Joue-le.",
+    "de": "Zeichne es. Bau es. Spiel es."
+  },
+  "cover": "docs/screenshots/play.png",
+  "genre": "game-maker",
+  "tech": ["JavaScript", "Canvas", "PWA"],
+  "order": 10
+}
