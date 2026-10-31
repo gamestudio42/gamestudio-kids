@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://gamestudio42.github.io/gamestudio-kids/"><img src="https://img.shields.io/badge/Play_in_browser-3fa97a?style=for-the-badge&labelColor=4a2f55&color=3fa97a" alt="Play Game Studio Kids"></a>
-  <a href="https://github.com/gamestudio42/gamestudio-kids/deployments/github-pages"><img src="https://img.shields.io/github/deployments/gamestudio42/gamestudio-kids/github-pages?style=for-the-badge&labelColor=4a2f55&label=Pages" alt="GitHub Pages deployment status"></a>
+  <a href="https://github.com/gamestudio42/gamestudio-kids/actions/workflows/pages.yml"><img src="https://img.shields.io/github/actions/workflow/status/gamestudio42/gamestudio-kids/pages.yml?branch=main&style=for-the-badge&labelColor=4a2f55&label=Pages" alt="GitHub Pages deployment status"></a>
   <a href="https://github.com/gamestudio42/gamestudio-kids/stargazers"><img src="https://img.shields.io/github/stars/gamestudio42/gamestudio-kids?style=for-the-badge&labelColor=4a2f55&color=e05584" alt="GitHub stars"></a>
   <a href="https://github.com/gamestudio42"><img src="https://img.shields.io/badge/Game_Studio_42-4a2f55?style=for-the-badge&labelColor=4a2f55&color=8a6fe0" alt="Game Studio 42"></a>
 </p>
@@ -106,7 +106,9 @@ python3 -m http.server 8000   # then open http://YOUR-COMPUTER-IP:8000
 | `js/app.js`           | Home screen, tabs, questions, backup, import and export       |
 | `sw.js`, `js/pwa.js`  | Offline cache and the install button                          |
 
-GitHub Pages serves the `main` branch as it is. A project is a single JSON document, so the
+Every push and pull request runs `tools/check.mjs` (scripts parse, JSON is valid, cached files
+exist) and `tools/smoke.mjs` (a headless browser opens the studio, visits every tab and plays
+for a moment). Pushes to `main` then publish the app files to GitHub Pages. A project is a single JSON document, so the
 level already records its view (`lado`, side-on) to make room for top-down levels later.
 For older children there is a companion studio with rules, several levels and HTML export.
 The original Portuguese notes are in [docs/LEIA-ME.md](docs/LEIA-ME.md).
