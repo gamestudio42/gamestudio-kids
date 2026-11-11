@@ -18,7 +18,8 @@
     built = true;
     const keys = { ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right', ArrowUp: 'jump', w: 'jump', W: 'jump', ' ': 'jump' };
     document.addEventListener('keydown', (e) => {
-      if (app().tab !== 'jogar' || !keys[e.key]) return;
+      const sharing = document.getElementById('share') && !document.getElementById('share').hidden;
+      if (sharing || app().tab !== 'jogar' || !keys[e.key]) return;
       e.preventDefault();
       input[keys[e.key]] = true;
     });

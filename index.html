@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Game Studio Kids</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&display=swap" rel="stylesheet">
@@ -57,6 +57,7 @@
       <label class="chip">📥 Importar jogo (.gsk)
         <input id="file-import" type="file" accept=".gsk,application/json" hidden>
       </label>
+      <button id="btn-share" class="chip" type="button" title="Mostrar o endereço em QR">📱 <span class="label">Passar o endereço</span></button>
       <button id="btn-install" class="chip" type="button" hidden>📲 Instalar no aparelho</button>
       <p id="install-hint" class="muted install-hint" hidden></p>
     </footer>
@@ -73,6 +74,7 @@
         <button id="tab-jogar" class="tab play" data-tab="jogar" type="button" title="Jogar">▶️ <span class="label">Jogar</span></button>
       </nav>
       <div class="bar-right">
+        <button id="btn-share-studio" class="icon-btn" type="button" title="Mostrar o endereço em QR" aria-label="Mostrar o endereço em QR">📱</button>
         <button id="btn-tour" class="icon-btn" type="button" title="Tour">❓</button>
         <button id="music-toggle" class="icon-btn" type="button" title="Música"></button>
         <button id="mode-toggle" class="icon-btn" type="button"></button>
@@ -135,9 +137,14 @@
     <!-- Jogar -->
     <section id="view-jogar" class="view" hidden>
       <div class="play-wrap">
-        <div class="hud"><span id="hud-coins">⭐ 0</span></div>
-        <canvas id="game-canvas" width="256" height="192"></canvas>
-        <div id="play-msg" class="play-msg" hidden></div>
+        <div class="play-top">
+          <button id="btn-play-back" class="chip play-back" type="button" title="Voltar">⬅️ Voltar</button>
+          <div class="hud"><span id="hud-coins">⭐ 0</span></div>
+        </div>
+        <div class="play-stage">
+          <canvas id="game-canvas" width="256" height="192"></canvas>
+          <div id="play-msg" class="play-msg" hidden></div>
+        </div>
         <div class="touch-controls">
           <div class="pad">
             <button class="pad-btn" data-key="left" type="button">◀️</button>
@@ -170,6 +177,18 @@
 
   <div id="toast" class="toast" hidden></div>
 
+  <div id="share" class="ask" hidden>
+    <div class="ask-box share-box" role="dialog" aria-modal="true" aria-labelledby="share-text">
+      <p id="share-text"></p>
+      <canvas id="share-qr" hidden></canvas>
+      <p id="share-url" class="share-url"></p>
+      <div class="share-actions">
+        <button id="share-send" class="chip green" type="button" hidden>📤 <span class="label">Enviar link</span></button>
+        <button id="share-close" class="chip" type="button">Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Pergunta com ícones (sim / não), lida em voz alta -->
   <div id="ask" class="ask" hidden>
     <div class="ask-box" role="dialog" aria-modal="true" aria-labelledby="ask-text">
@@ -187,6 +206,7 @@
   <script src="js/level-editor.js"></script>
   <script src="js/game.js"></script>
   <script src="js/tour.js"></script>
+  <script src="js/qr.js"></script>
   <script src="js/app.js"></script>
   <script src="js/pwa.js"></script>
 </body>

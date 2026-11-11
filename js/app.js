@@ -4,6 +4,8 @@
   const $ = (id) => document.getElementById(id);
 
   let saveTimer = 0;
+  let playFrom = 'montar';
+  const playMq = window.matchMedia('(max-width: 820px), (max-height: 540px)');
   const app = (GSK.app = {
     project: null,
     tab: null,
@@ -51,9 +53,10 @@
   // ---------- Tela inicial ----------
   function showHome() {
     GSK.Play.stop();
+    app.tab = null;
+    document.body.classList.remove('play-focus');
     GSK.Tour.stop(false);
     app.project = null;
-    app.tab = null;
     $('studio').hidden = true;
     $('home').hidden = false;
     renderHome();
@@ -136,7 +139,16 @@
   }
 
   // ---------- Abas ----------
+  function wantsPlayFocus() {
+    return app.tab === 'jogar' && !document.body.classList.contains('touring') && playMq.matches;
+  }
+
+  function syncPlayFocus() {
+    document.body.classList.toggle('play-focus', wantsPlayFocus());
+  }
+
   function setTab(t) {
+    if (t === 'jogar' && app.tab && app.tab !== 'jogar') playFrom = app.tab;
     if (app.tab === 'jogar' && t !== 'jogar') GSK.Play.stop();
     app.tab = t;
     ['desenhar', 'montar', 'jogar'].forEach((name) => {
@@ -147,7 +159,49 @@
     if (t === 'desenhar') GSK.PixelEditor.show();
     if (t === 'montar') GSK.LevelEditor.show();
     if (t === 'jogar') GSK.Play.show();
+    syncPlayFocus();
     bus.emit('tab:' + t);
+  }
+
+  // The other phone can open http(s) addresses that are not this machine's loopback.
+  function addressStaysOnThisDevice() {
+    if (location.protocol !== 'http:' && location.protocol !== 'https:') return true;
+    const host = location.hostname.replace(/^\[|\]$/g, '');
+    return host === 'localhost' || host === '127.0.0.1' || host === '::1';
+  }
+
+  function openShare() {
+    const url = location.href;
+    const localOnly = addressStaysOnThisDevice();
+    const canvas = $('share-qr');
+    $('share-url').textContent = url;
+    $('share-text').textContent = localOnly
+      ? 'Este endereço só abre neste aparelho.'
+      : 'Aponte a câmera do outro celular para este desenho.';
+    if (localOnly || !GSK.qr.draw(canvas, url)) {
+      canvas.hidden = true;
+      if (!localOnly) $('share-text').textContent = 'Este endereço é longo demais para o desenho.';
+    } else canvas.hidden = false;
+    $('share-send').hidden = localOnly || typeof navigator.share !== 'function';
+    if (GSK.Play && GSK.Play.input) {
+      GSK.Play.input.left = false;
+      GSK.Play.input.right = false;
+      GSK.Play.input.jump = false;
+    }
+    $('share').hidden = false;
+    $('share-close').focus();
+  }
+
+  function closeShare() {
+    $('share').hidden = true;
+  }
+
+  async function sendShare() {
+    try {
+      await navigator.share({ title: 'Game Studio Kids', url: location.href });
+    } catch (e) {
+      if (!e || e.name !== 'AbortError') app.toast('⚠️ Não consegui enviar o endereço.');
+    }
   }
 
   // ---------- Importar e exportar ----------
@@ -257,6 +311,15 @@
       b.addEventListener('click', () => newProject(w));
     });
     $('btn-home').addEventListener('click', showHome);
+    $('btn-share').addEventListener('click', openShare);
+    $('btn-share-studio').addEventListener('click', openShare);
+    $('share-close').addEventListener('click', closeShare);
+    $('share-send').addEventListener('click', sendShare);
+    $('share').addEventListener('click', (e) => { if (e.target === $('share')) closeShare(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('share').hidden) closeShare(); });
+    $('btn-play-back').addEventListener('click', () => setTab(playFrom || 'montar'));
+    window.addEventListener('resize', syncPlayFocus);
+    playMq.addEventListener('change', syncPlayFocus);
     $('btn-tour').addEventListener('click', () => { if (GSK.Tour.active()) GSK.Tour.stop(false); else GSK.Tour.start(); });
     $('project-name').addEventListener('click', () => {
       const name = prompt('Nome do jogo:', app.project.name);
