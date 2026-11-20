@@ -1,0 +1,45 @@
+{
+  "name": "gamestudio-kids",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Desktop window for the Game Studio Kids web studio. The game itself stays in the site files.",
+  "author": "Marcel Savegnago <marcel.savegnago@gmail.com>",
+  "license": "AGPL-3.0-or-later",
+  "homepage": "https://gamestudio42.github.io/gamestudio-kids/",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "node scripts/copy-www.mjs && electron .",
+    "smoke": "node scripts/copy-www.mjs && electron . --smoke",
+    "dist:dir": "node scripts/copy-www.mjs && electron-builder --linux dir --publish never"
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "io.github.gamestudio42.gamestudio-kids",
+    "productName": "Game Studio Kids",
+    "executableName": "gamestudio-kids",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "www/**",
+      "package.json"
+    ],
+    "asar": true,
+    "linux": {
+      "target": [
+        "dir"
+      ],
+      "category": "Game",
+      "icon": "build/icon.png",
+      "synopsis": "A 2D game maker for children aged five and up",
+      "description": "Draw, build and play your own pixel-art games. Works offline.",
+      "executableName": "gamestudio-kids"
+    }
+  }
+}

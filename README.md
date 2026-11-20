@@ -87,6 +87,14 @@ and **Importar jogo** brings them back; the home screen reminds you when a game 
 since the last copy. To install the studio as an app, open the site and choose
 **📲 Instalar no aparelho** (Chrome, Edge, Android) or *Share → Add to Home Screen* (iPad, iPhone).
 
+## Linux (Snap)
+
+```sh
+sudo snap install gamestudio-kids
+```
+
+The Snap Store Builds tab builds `main` and releases it to the `edge` channel.
+
 ## Develop
 
 There is no build step: the studio is plain JavaScript, HTML and CSS, and `index.html` also
