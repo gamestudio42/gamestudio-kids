@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Game Studio Kids
+Comment=A 2D game maker for children aged five and up
+Exec=gamestudio-kids
+Icon=${SNAP}/meta/gui/icon.png
+Categories=Game;KidsGame;
+StartupWMClass=Game Studio Kids
+Terminal=false

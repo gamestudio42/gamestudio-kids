@@ -1,0 +1,71 @@
+# Game Studio Kids as a snap, built from source: installs the desktop shell, copies the
+# site files it already serves and packs release/linux-unpacked. The Snap Store's
+# Builds tab builds and releases it to edge on every push to main; .github/workflows/snap.yml
+# builds the same file and smoke-tests it.
+#
+# The store banner is not part of the snap. snap/gui is only the desktop entry and the icon,
+# which snapcraft copies to meta/gui. Upload snap/store/banner.jpg in the listing media and
+# keep the name banner.jpg: 3840×1280, 3:1, under the 2 MB limit.
+name: gamestudio-kids
+title: Game Studio Kids
+base: core22
+adopt-info: gamestudio-kids
+icon: snap/gui/icon.png
+summary: A 2D game maker for children aged five and up
+description: |
+  Draw it. Build it. Play it.
+
+  Game Studio Kids is a 2D game maker for children aged five and up. Children
+  paint their own pixel-art characters, place them in a level and play the
+  game they made. Pixo, a friendly mascot, guides the first game step by step
+  and reads every instruction aloud.
+
+  Three worlds are ready to play: Nuvem, Bosque and Noite. From scratch starts
+  with an empty level. Run, jump, collect stars and reach the finish. Games
+  stay on this computer. No account is needed, and the studio works offline.
+
+  The studio is in Brazilian Portuguese, with large icons and spoken instructions.
+license: AGPL-3.0-or-later
+website: https://gamestudio42.github.io/gamestudio-kids/
+source-code: https://github.com/gamestudio42/gamestudio-kids
+issues: https://github.com/gamestudio42/gamestudio-kids/issues
+contact: talkgamestudio42@gmail.com
+grade: stable
+confinement: strict
+compression: lzo
+
+architectures:
+  - build-on: amd64
+
+apps:
+  gamestudio-kids:
+    # Chromium's own sandbox cannot run inside strict confinement; the snap sandbox replaces it.
+    command: app/gamestudio-kids --no-sandbox
+    desktop: meta/gui/gamestudio-kids.desktop
+    extensions: [gnome]
+    plugs:
+      - browser-support
+      - opengl
+      - audio-playback
+    environment:
+      TMPDIR: $XDG_RUNTIME_DIR
+
+parts:
+  gamestudio-kids:
+    plugin: nil
+    source: .
+    build-snaps:
+      - node/22/stable
+    stage-packages:
+      - libnspr4
+      - libnss3
+      - libxss1
+    override-pull: |
+      craftctl default
+      craftctl set version="$(sed -n 's/^  "version": "\(.*\)",$/\1/p' desktop/package.json)"
+    override-build: |
+      cd desktop
+      npm ci
+      npm run dist:dir
+      mkdir -p "$CRAFT_PART_INSTALL/app"
+      cp -a release/linux-unpacked/. "$CRAFT_PART_INSTALL/app/"
